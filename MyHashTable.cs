@@ -2,13 +2,20 @@ namespace MyHashTable;
 
 public class HashTable
 {
-	Dictionary<byte, string> table = new();
+	private string[] table;
+	private int size;
+
+	public HashTable(int size)
+	{
+		this.size = size;
+		table = new string[size];
+	}
 
 	public byte Add(string word)
 	{
-		byte hash = GetHash(word);
-		table.Add(hash, word);
-		return hash;
+		int hash = PearsonHash(word);
+		table[hash] = word;
+		return (byte)hash;
 	}
 
 	public string Get(byte hash)
@@ -16,8 +23,13 @@ public class HashTable
 		return table[hash];
 	}
 
-	private byte GetHash(string word)
+	private int PearsonHash(string word)
 	{
-		return (byte)word.Length;
+		int hash = 0;
+		foreach (char c in word)
+		{
+			hash = hash * 33 + c;
+		}
+		return Math.Abs(hash) % size;
 	}
 }
