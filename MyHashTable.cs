@@ -1,14 +1,12 @@
-namespace MyHashTable;
+using System;
 
 public class HashTable
 {
 	private string[] table;
-	private int size;
 
-	public HashTable(int size)
+	public HashTable()
 	{
-		this.size = size;
-		table = new string[size];
+		table = new string[256];
 	}
 
 	public byte Add(string word)
@@ -26,10 +24,10 @@ public class HashTable
 	private int PearsonHash(string word)
 	{
 		int hash = 0;
-		foreach (char c in word)
+		for (int i = 0; i < word.Length; i++)
 		{
-			hash = hash * 33 + c;
+			hash = hash ^ (hash << 5) ^ (hash >> 2) ^ word[i];
 		}
-		return Math.Abs(hash) % size;
+		return Math.Abs(hash) % 256;
 	}
 }

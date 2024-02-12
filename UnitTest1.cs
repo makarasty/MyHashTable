@@ -2,59 +2,54 @@ namespace MyHashTable;
 
 public class HashTableTests
 {
-	[Fact]
-	public void Add_Get_String()
+	private HashTable hashTable;
+
+	public HashTableTests()
 	{
-		var table = new HashTable(100);
-
-		string word = "hello";
-		byte hash = table.Add(word);
-
-		string result = table.Get(hash);
-
-		Assert.Equal(word, result);
+		hashTable = new HashTable();
 	}
 
 	[Fact]
-	public void Get_NonExistentKey_ReturnsNull()
+	public void Add_ShouldStoreWordAndReturnItsHash()
 	{
-		var table = new HashTable(100);
+		string word = "test";
 
-		string result = table.Get(10);
+		byte hash = hashTable.Add(word);
+		string retrievedWord = hashTable.Get(hash);
 
-		Assert.Null(result);
+		Assert.Equal(word, retrievedWord);
 	}
 
 	[Fact]
-	public void Add_DifferentStrings_NoCollision()
+	public void Get_ShouldRetrieveCorrectWordByHash()
 	{
-		var table = new HashTable(100);
+		string word = "retrieve";
+		byte hash = hashTable.Add(word);
 
-		table.Add("hello");
-		table.Add("world");
+		string retrievedWord = hashTable.Get(hash);
 
-		string word1 = table.Get(table.Add("hello"));
-		string word2 = table.Get(table.Add("world"));
-
-		Assert.Equal("hello", word1);
-		Assert.Equal("world", word2);
+		Assert.Equal(word, retrievedWord);
 	}
 
 	[Fact]
-	public void HashTable_FilledToCapacity_Succeeds()
+	public void Get_ShouldReturnNullForUnknownHash()
 	{
-		var table = new HashTable(3);
+		byte hash = 0;
 
-		table.Add("a");
-		table.Add("b");
-		table.Add("c");
+		string retrievedWord = hashTable.Get(hash);
 
-		string a = table.Get(table.Add("a"));
-		string b = table.Get(table.Add("b"));
-		string c = table.Get(table.Add("c"));
+		Assert.Null(retrievedWord);
+	}
 
-		Assert.Equal("a", a);
-		Assert.Equal("b", b);
-		Assert.Equal("c", c);
+	[Fact]
+	public void Add_ShouldHandleCollisions()
+	{
+		string word1 = "collision1";
+		string word2 = "collision2";
+		byte hash1 = hashTable.Add(word1);
+		byte hash2 = hashTable.Add(word2);
+
+		Assert.Equal(word1, hashTable.Get(hash1));
+		Assert.Equal(word2, hashTable.Get(hash2));
 	}
 }
